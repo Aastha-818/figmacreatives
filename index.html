@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figmacreatives — Hire one team for your whole tech</title>
+<meta name="description" content="A designer, a developer and a team that ships. Products we've built are used by 800,000+ people. Hire us as your entire tech team.">
+<meta property="og:title" content="Hire one team. Get your whole tech.">
+<meta property="og:description" content="A designer, a developer and a team that ships — 800k+ users across our products. You manage us. That's it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  BEFORE LAUNCH
+  · Meta Pixel: paste base code here. A Lead event fires on form success.
+  · Form → Google Sheet: open the sheet "Figmacreatives — Website Leads" → Extensions → Apps Script →
+    paste apps-script.gs → Deploy → New deployment → Web app → Execute as Me, Access: Anyone → copy URL
+    into SHEET_ENDPOINT (bottom of this file). Until then the form opens an email draft.
+  · Screenshots: add <img src="assets/<slug>.jpg"> inside any .shot — the tint stays as the frame.
+-->
+<style>
+:root{
+  --bg:#FAFAF8;--ink:#141414;--ink-2:#6B6B66;--ink-3:#A3A39D;--line:#E6E6E1;
+  --blue:#2B49F0;
+  --sans:"Geist",ui-sans-serif,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --col:min(100% - 48px,1120px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 1}
+em,i,cite,address,dfn,var{font-style:normal}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+::selection{background:var(--ink);color:var(--bg)}
+.wrap{width:var(--col);margin-inline:auto}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--bg);padding:8px 12px;z-index:99}.skip:focus{left:8px}
+
+/* entrance: one quiet rise */
+.r{opacity:0;transform:translateY(16px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.r.in{opacity:1;transform:none}
+.r.d1{transition-delay:.1s}.r.d2{transition-delay:.2s}.r.d3{transition-delay:.3s}
+
+/* nav — two words, nothing else */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;pointer-events:none}
+.nav a{pointer-events:auto}
+.nav .wm{transition:opacity .4s,transform .6s var(--ease)}
+.nav.away .wm{opacity:0;transform:translateY(-8px)}
+.nav a.go{padding:10px 16px;border-radius:999px;transition:background .4s,box-shadow .4s,color .3s}
+.nav.away a.go{background:var(--ink);color:var(--bg);box-shadow:0 10px 30px -14px rgba(0,0,0,.35)}
+.nav .wrap{display:flex;justify-content:space-between;align-items:center;height:64px;font-size:14px;font-weight:500}
+.nav a.go{display:inline-flex;align-items:center;gap:8px}
+.nav a.go i{width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block;animation:blink 2.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* hero — the signature: a headline with the team inline as chips */
+.hero{padding:180px 0 96px;text-align:center}
+.hero h1{font-size:clamp(2rem,4.4vw,3.9rem);line-height:1.22;letter-spacing:-.045em;font-weight:500;text-wrap:balance;max-width:20ch;margin-inline:auto}
+.chip{display:inline-grid;grid-template-columns:auto auto;align-items:center;column-gap:.22em;vertical-align:baseline;height:1.18em;padding:0 .38em 0 .12em;border-radius:999px;background:var(--c,#EEF0FF);color:var(--ink);font-weight:500;font-size:1em;letter-spacing:-.045em;line-height:1;white-space:nowrap;transition:transform .5s var(--ease)}
+.chip:hover{transform:translateY(-2px) rotate(-1.5deg)}
+.chip .av{width:2.9em;height:2.9em;border-radius:50%;background:var(--a,var(--blue));color:#fff;display:grid;place-items:center;font-size:.3em;font-weight:600;letter-spacing:0;line-height:1;font-family:var(--sans)}
+.chip.c1{--c:#E9EEFF;--a:#2B49F0}.chip.c2{--c:#E6F4EA;--a:#1F7A4D}.chip.c3{--c:#FFF1E3;--a:#D96B1F}
+.hero p{margin:30px auto 0;max-width:48ch;color:var(--ink-2);font-size:clamp(1rem,1.4vw,1.2rem);text-wrap:pretty}
+.hero .cta{margin-top:40px;display:flex;gap:28px;justify-content:center;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:16px 24px;border-radius:999px;font-weight:500;font-size:15px;transition:transform .5s var(--ease),background .3s}
+.btn:hover{transform:translateY(-2px);background:var(--blue)}
+.lnk{font-size:15px;font-weight:500;border-bottom:1px solid var(--line);padding-bottom:2px;transition:border-color .3s}
+.lnk:hover{border-color:var(--ink)}
+@media (max-width:760px){.hero{padding:130px 0 72px}.hero h1{font-size:clamp(1.9rem,8vw,2.6rem)}}
+
+/* shelf — one row of product shots that drifts sideways; pauses on hover */
+.shelf{padding:0 0 128px;overflow:hidden}
+.track{display:flex;gap:16px;width:max-content;animation:drift 70s linear infinite}
+.shelf:hover .track{animation-play-state:paused}
+@keyframes drift{to{transform:translateX(-50%)}}
+.shot{width:min(300px,72vw);aspect-ratio:4/5;border-radius:18px;background:var(--t,#EDEDE9);position:relative;overflow:hidden;display:grid;grid-template-rows:auto 1fr auto;padding:20px 22px 22px;flex:none;transition:transform .6s var(--ease)}
+.shot:hover{transform:translateY(-6px)}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shot .k{position:relative;display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.shot .b{position:relative}
+.shot .b .n{display:flex;align-items:baseline;gap:.35em;font-size:2.2rem;line-height:1;letter-spacing:-.04em;font-weight:400}
+.shot .b .n small{font-size:13px;color:var(--ink-2);letter-spacing:0;font-weight:400}
+.shot .b h3{font-size:1rem;font-weight:500;margin-top:12px;letter-spacing:-.015em}
+.shot .b p{font-size:13px;color:var(--ink-2);margin-top:2px;line-height:1.4}
+.shot.dark{--t:#171717;color:#F2F2EE}.shot.dark .k,.shot.dark .b p,.shot.dark .b .n small{color:rgba(242,242,238,.6)}
+.shot .mid{position:relative;overflow:hidden;margin:16px -22px 10px;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.shot .ui{width:54%;aspect-ratio:9/13;border-radius:14px 14px 0 0;margin:0 auto;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.05);border-bottom:0;box-shadow:0 30px 50px -40px rgba(0,0,0,.4);display:grid;align-content:start;gap:8px;padding:14px 12px;transform:translateY(8px);transition:transform .7s var(--ease)}
+.shot:hover .ui{transform:translateY(0)}
+.shot.dark .ui{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.08)}
+.shot .ui i{display:block;height:7px;border-radius:4px;background:rgba(0,0,0,.08)}
+.shot.dark .ui i{background:rgba(255,255,255,.14)}
+.shot .ui i.h{height:30px;border-radius:8px;background:rgba(0,0,0,.06)}
+.shot .ui i.w1{width:55%}.shot .ui i.w2{width:80%}.shot .ui i.w3{width:35%}
+
+/* one hairline row of numbers */
+.numbers{padding:0 0 128px}
+.numbers .row{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:28px 0}
+.num{display:grid;gap:6px}
+.num .n{font-size:2.4rem;letter-spacing:-.04em;font-weight:400;line-height:1;font-variant-numeric:tabular-nums}
+.num p{font-size:14px;color:var(--ink-2);line-height:1.4}
+@media (max-width:760px){.numbers{padding-bottom:88px}.numbers .row{grid-template-columns:1fr 1fr;gap:24px}}
+
+/* the pitch — three columns of plain text */
+.pitch{padding:0 0 128px}
+.pitch h2{font-size:clamp(1.7rem,3vw,2.5rem);letter-spacing:-.035em;line-height:1.12;font-weight:500;max-width:24ch;text-wrap:balance}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+.col{border-top:1px solid var(--line);padding-top:22px;display:grid;grid-template-rows:auto auto 1fr auto;gap:12px;align-items:start}
+.col .who{display:flex;align-items:center;gap:10px;font-weight:500;font-size:15px;min-height:28px}
+.col .who .av{width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:600;flex:none}
+.col h3{font-size:1.15rem;letter-spacing:-.02em;font-weight:500;margin-top:6px}
+.col p{font-size:15px;color:var(--ink-2);line-height:1.5;text-wrap:pretty;max-width:34ch}
+.col .cred{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-top:14px;display:flex;gap:14px;flex-wrap:wrap}
+.col .cred a{color:var(--ink-2);border-bottom:1px solid var(--line)}
+.col .cred a:hover{color:var(--ink);border-color:var(--ink)}
+.pitch .line{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.pitch .line b{font-size:1.15rem;font-weight:500;letter-spacing:-.02em;line-height:1.45}
+.pitch .line span{color:var(--ink-2);font-size:15px;line-height:1.5;max-width:40ch}
+@media (max-width:860px){.pitch{padding-bottom:88px}.cols{grid-template-columns:1fr;gap:28px;margin-top:36px}.pitch .line{grid-template-columns:1fr;gap:10px}}
+
+/* work — a ledger, not a grid */
+.work{padding:0 0 128px}
+.work .head{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+.work h2{font-size:clamp(1.7rem,3vw,2.5rem);letter-spacing:-.035em;line-height:1.12;font-weight:500}
+.ledger{border-top:1px solid var(--line)}
+.rowl{display:grid;grid-template-columns:36px 1.2fr 1.6fr .8fr 24px;gap:20px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line);transition:padding .4s var(--ease)}
+.rowl:hover{padding-left:8px}
+.rowl .i{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.rowl .t{font-weight:500;letter-spacing:-.015em}
+.rowl .t small{display:block;font-weight:400;color:var(--ink-3);font-size:13px;margin-top:1px}
+.rowl .w{color:var(--ink-2);font-size:15px}
+.rowl .r{font-size:15px;text-align:right;letter-spacing:-.01em}
+.rowl .r small{display:block;color:var(--ink-3);font-size:12px}
+.rowl .a{color:var(--ink-3);transition:color .3s,transform .5s var(--ease)}
+.rowl:hover .a{color:var(--ink);transform:translate(2px,-2px)}
+.rowl .a svg{width:16px;height:16px}
+.rowl .tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px;margin-left:8px;vertical-align:1px;background:#E6F4EA;color:#1F7A4D}
+.rowl .tag.d{background:#E9EEFF;color:#2B49F0}
+@media (max-width:860px){.work{padding-bottom:88px}.rowl{grid-template-columns:28px 1fr 24px;gap:12px}.rowl .w{grid-column:2;margin-top:-6px}.rowl .r{grid-column:2;text-align:left;color:var(--ink-2)}.rowl .r small{display:inline;margin-left:6px}.rowl .a{grid-row:1}}
+
+/* start — centred headline, two fields */
+.start{padding:40px 0 100px;text-align:center}
+.start h2{font-size:clamp(2.2rem,5.6vw,4.6rem);letter-spacing:-.045em;line-height:1.04;font-weight:500;text-wrap:balance;max-width:16ch;margin-inline:auto}
+.start p{color:var(--ink-2);margin:20px auto 0;max-width:44ch}
+.form{margin:44px auto 0;max-width:620px;display:grid;gap:12px;text-align:left}
+.form input,.form textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);padding:16px 0;outline:none;font-size:17px;transition:border-color .3s;border-radius:0}
+.form input:focus,.form textarea:focus{border-color:var(--ink)}
+.form textarea{min-height:96px;resize:vertical}
+.form ::placeholder{color:var(--ink-3)}
+.form .send{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.form .send small{font-size:13px;color:var(--ink-3)}
+.form .done{display:none;text-align:center;padding:24px 0}
+.form.ok input,.form.ok textarea,.form.ok .send{display:none}.form.ok .done{display:block}
+.start .alt{margin-top:40px;font-size:14px;color:var(--ink-3)}
+.start .alt a{color:var(--ink-2);border-bottom:1px solid var(--line)}
+
+footer{padding:0 0 32px}
+footer .wrap{border-top:1px solid var(--line);padding-top:20px;display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
+footer a:hover{color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){.r{opacity:1;transform:none;transition:none}.track{animation:none}.nav a.go i{animation:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#start">Skip to the form</a>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="wm" href="#top">Figmacreatives</a>
+    <a class="go" href="#start"><i></i>Start a project</a>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero wrap">
+  <p class="mono r">Bengaluru · working with founders worldwide</p>
+  <h1 class="r d1" style="margin-top:22px">
+    A <span class="chip c1"><span class="av">AS</span><span>designer</span></span>, a <span class="chip c2"><span class="av">SP</span><span>developer</span></span> and a <span class="chip c3"><span class="av">+4</span><span>team</span></span> that ships. Hire us as your whole tech.
+  </h1>
+  <p class="r d2">Aastha designs it. Suyog and the team build it, launch it and keep it running. You manage one team, directly — no agency, no handoffs, no account manager.</p>
+  <div class="cta r d3">
+    <a class="btn" href="#start">Tell us what you're building</a>
+    <a class="lnk" href="#work">See the work</a>
+  </div>
+</section>
+
+<!-- the shelf: products we've designed or built, drifting past -->
+<section class="shelf" aria-label="Products">
+  <div class="track" id="track">
+    <a class="shot" style="--t:#E9EEFF" href="https://play.google.com/store/apps/details?id=com.sozolabs.saarthi&hl=en_IN" target="_blank" rel="noopener"><div class="k"><span>Built</span><span>Google Play ↗</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w2"></i><i class="w1"></i><i class="w3"></i></div></div><div class="b"><div class="n">500k <small>users</small></div><h3>Saarthi</h3><p>Consumer AI · astrology, in chat</p></div></a>
+    <a class="shot" style="--t:#E6F4EA" href="https://play.google.com/store/apps/details?id=com.soundpay.app&hl=en_IN" target="_blank" rel="noopener"><div class="k"><span>Built</span><span>Google Play ↗</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w1"></i><i class="w2"></i><i class="w3"></i></div></div><div class="b"><div class="n">100k <small>users</small></div><h3>SoundPay</h3><p>UPI soundbox for shopkeepers</p></div></a>
+    <a class="shot dark" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><div class="k"><span>Designed</span><span>Singapore</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w2"></i><i class="w1"></i></div></div><div class="b"><div class="n">0→1</div><h3>AutoForce AI</h3><p>Brand to full SaaS, from nothing</p></div></a>
+    <a class="shot" style="--t:#FFF1E3" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><div class="k"><span>Designed</span><span>Web + mobile</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w1"></i><i class="w2"></i><i class="w3"></i><i class="w2"></i></div></div><div class="b"><div class="n">1L+ <small>students</small></div><h3>StepGenie</h3><p>Brand, design system, 40+ screens</p></div></a>
+    <a class="shot" style="--t:#F3E8F1" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><div class="k"><span>Designed</span><span>AI product</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w2"></i><i class="w3"></i></div></div><div class="b"><div class="n">1L+ <small>users</small></div><h3>Sketcho AI</h3><p>Identity, UI and the master prompt</p></div></a>
+    <a class="shot" style="--t:#EDEDE9" href="https://play.google.com/store/apps/details?id=com.trueeducation.iithome&hl=en_IN" target="_blank" rel="noopener"><div class="k"><span>Built</span><span>Google Play ↗</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w2"></i><i class="w2"></i><i class="w1"></i></div></div><div class="b"><div class="n">1 <small>institute</small></div><h3>IIT-Home</h3><p>Attendance, schedules, doubts — one app</p></div></a>
+    <a class="shot" style="--t:#E4EFEA" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><div class="k"><span>Designed</span><span>B2B</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w1"></i><i class="w2"></i></div></div><div class="b"><div class="n">Brand <small>+ web app</small></div><h3>Senslyze</h3><p>Brand system, dashboards, pitch deck</p></div></a>
+    <a class="shot" style="--t:#EFEAE0" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><div class="k"><span>Designed</span><span>MedTech</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w2"></i><i class="w1"></i><i class="w3"></i></div></div><div class="b"><div class="n">GUI <small>on device</small></div><h3>Bio Spectronics</h3><p>Interface for a biochemistry analyzer</p></div></a>
+    <a class="shot" style="--t:#F6E9DC" href="https://instagram.com/figmacreatives" target="_blank" rel="noopener"><div class="k"><span>Designed</span><span>Canada</span></div><div class="mid"><div class="ui"><i class="h"></i><i class="w2"></i><i class="w1"></i></div></div><div class="b"><div class="n">Pack <small>+ brand</small></div><h3>Grandma's Legacy</h3><p>Packaging and mascot for a Canadian food brand</p></div></a>
+  </div>
+</section>
+
+<section class="numbers wrap">
+  <div class="row r">
+    <div class="num"><div class="n">800k+</div><p>users across our products</p></div>
+    <div class="num"><div class="n">9</div><p>products, brand to store</p></div>
+    <div class="num"><div class="n">3</div><p>apps live on Google Play</p></div>
+    <div class="num"><div class="n">48h</div><p>to a scoped plan and price</p></div>
+  </div>
+</section>
+
+<section class="pitch wrap" id="team">
+  <h2 class="r">Hiring a designer, then a developer, then someone to run them — or hiring us.</h2>
+  <div class="cols">
+    <div class="col r"><div class="who"><span class="av" style="--a:#2B49F0">AS</span>Aastha Sahu</div><h3>Designs it</h3><p>Brand identity, logo, UI/UX — every screen and state. An engineering degree behind the design, so screens are buildable the day they're approved.</p><div class="cred"><a href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener">Portfolio</a><a href="https://instagram.com/figmacreatives" target="_blank" rel="noopener">Instagram</a></div></div>
+    <div class="col r d1"><div class="who"><span class="av" style="--a:#1F7A4D">SP</span>Suyog Parkhi</div><h3>Builds it</h3><p>Founding engineer across payments, AI, data and infrastructure. Built Saarthi and SoundPay from zero; previously payments data at Juspay.</p><div class="cred"><a href="https://suyog.me" target="_blank" rel="noopener">suyog.me</a><a href="https://play.google.com/store/apps/details?id=com.sozolabs.saarthi&hl=en_IN" target="_blank" rel="noopener">Saarthi on Play</a></div></div>
+    <div class="col r d2"><div class="who"><span class="av" style="--a:#D96B1F">+4</span>The team</div><h3>Ships it and keeps it alive</h3><p>Mobile, web, backend and QA. Store listings, releases, monitoring, the 2 a.m. hotfix — and the same people next month.</p><div class="cred"><span>Bengaluru</span><span>Remote · your timezone</span></div></div>
+  </div>
+  <div class="line r"><b>You manage us. That's your whole job.</b><span>One weekly walkthrough, one Slack channel, one invoice. Everything between the idea and the app store is ours.</span></div>
+</section>
+
+<section class="work wrap" id="work">
+  <div class="head"><h2 class="r">The work</h2><span class="mono r">Designed · Built — tap a row to check</span></div>
+  <div class="ledger r">
+    <a class="rowl" href="https://play.google.com/store/apps/details?id=com.sozolabs.saarthi&hl=en_IN" target="_blank" rel="noopener"><span class="i">01</span><span class="t">Saarthi<span class="tag">Built</span><small>SozoLabs · Android</small></span><span class="w">Vedic guidance in chat — Hindi, English, Hinglish. App, backend, AI pipeline, releases.</span><span class="r">500k users<small>Live · 4.2★</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://play.google.com/store/apps/details?id=com.soundpay.app&hl=en_IN" target="_blank" rel="noopener"><span class="i">02</span><span class="t">SoundPay<span class="tag">Built</span><small>Fintech · Android</small></span><span class="w">Turns a phone into a UPI payment soundbox. Payment parsing, background audio, releases.</span><span class="r">100k users<small>Live</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://play.google.com/store/apps/details?id=com.trueeducation.iithome&hl=en_IN" target="_blank" rel="noopener"><span class="i">03</span><span class="t">IIT-Home<span class="tag">Built</span><small>EdTech · Android</small></span><span class="w">A coaching institute's Slack replacement — attendance, results, timetables, faculty doubts.</span><span class="r">1 institute<small>Live</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><span class="i">04</span><span class="t">AutoForce AI<span class="tag d">Designed</span><small>Singapore · AI SaaS</small></span><span class="w">Brand identity, logo and the complete SaaS interface, designed remotely from nothing.</span><span class="r">0 → 1<small>Delivered 2026</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><span class="i">05</span><span class="t">StepGenie<span class="tag d">Designed</span><small>EdTech · Web + mobile</small></span><span class="w">Brand, design system and 40+ screens on one system, handed to engineers as components.</span><span class="r">1 lakh+ students<small>Live</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><span class="i">06</span><span class="t">Sketcho AI<span class="tag d">Designed</span><small>AI product · Web</small></span><span class="w">Identity, product UI and the master prompt for an idea-to-whiteboard-video tool.</span><span class="r">1 lakh+ users<small>Live</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><span class="i">07</span><span class="t">Senslyze<span class="tag d">Designed</span><small>B2B</small></span><span class="w">Brand system, web app, dashboards and the pitch deck.</span><span class="r">Full system<small>Delivered</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://aasthasahu-portfolio.vercel.app/" target="_blank" rel="noopener"><span class="i">08</span><span class="t">Bio Spectronics<span class="tag d">Designed</span><small>MedTech · Device</small></span><span class="w">GUI for a Raspberry Pi-powered biochemistry analyzer used by clinicians.</span><span class="r">Hardware UI<small>In use</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+    <a class="rowl" href="https://instagram.com/figmacreatives" target="_blank" rel="noopener"><span class="i">09</span><span class="t">Grandma's Legacy<span class="tag d">Designed</span><small>Canada · Food brand</small></span><span class="w">Packaging design, logo and mascot system for a Canadian food brand.</span><span class="r">Packaging<small>Brand + pack</small></span><span class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M8 7h9v9"/></svg></span></a>
+  </div>
+</section>
+
+<section class="start wrap" id="start">
+  <h2 class="r">Tell us what you're building.</h2>
+  <p class="r d1">Two lines is enough. You'll get a scoped plan, a timeline and a price back within 48 hours — free, no call needed.</p>
+  <form class="form r d2" id="brief" novalidate>
+    <input name="email" type="email" placeholder="Your email" autocomplete="email" required>
+    <textarea name="brief" placeholder="What are you building, and where is it today?" required></textarea>
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+    <div class="send"><small>Goes straight to Aastha. A human reply, not a sequence.</small><button class="btn" type="submit">Send <span aria-hidden="true">→</span></button></div>
+    <div class="done"><b>Got it.</b> Aastha will write back within 48 hours.</div>
+  </form>
+  <p class="alt r d3">Or email <a href="mailto:sahuaastha818@gmail.com">sahuaastha818@gmail.com</a> · DM <a href="https://instagram.com/figmacreatives" target="_blank" rel="noopener">@figmacreatives</a></p>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Figmacreatives · Bengaluru</span>
+    <span><a href="https://instagram.com/figmacreatives" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.linkedin.com/in/sahu-aastha" target="_blank" rel="noopener">LinkedIn</a> · <a href="mailto:sahuaastha818@gmail.com">sahuaastha818@gmail.com</a></span>
+    <span id="clock">—:— IST</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Google Sheet "Figmacreatives — Website Leads". Paste the Apps Script web-app URL here after deploying apps-script.gs
+  var SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzeG6qN7Fbmg7Jh6cMkUn-RLsG8JwLjUaL8JpmZkUPXhdo9sL-DtaXV9Du8BTr9hXQJ/exec";
+  var TO = "sahuaastha818@gmail.com";
+
+  // duplicate the shelf once so the drift loops seamlessly
+  var t = document.getElementById('track'); t.innerHTML += t.innerHTML;
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els = document.querySelectorAll('.r');
+  if (reduce || !('IntersectionObserver' in window)) els.forEach(function(e){ e.classList.add('in'); });
+  else { var io = new IntersectionObserver(function(en){ en.forEach(function(x){ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); } }); },{threshold:.1,rootMargin:'0px 0px -6% 0px'}); els.forEach(function(e){ io.observe(e); }); }
+
+  function tick(){ var c=document.getElementById('clock'); if(c) c.textContent=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Kolkata'})+' IST'; }
+  tick(); setInterval(tick,30000);
+  var nav=document.querySelector('.nav'); function sc(){ nav.classList.toggle('away', scrollY>160); } sc(); addEventListener('scroll',sc,{passive:true});
+
+  var f = document.getElementById('brief');
+  f.addEventListener('submit', function(ev){
+    ev.preventDefault(); if(!f.checkValidity()){ f.reportValidity(); return; }
+    var fd = new FormData(f); if(fd.get('_gotcha')) return;
+    function ok(){ f.classList.add('ok'); if(window.fbq) fbq('track','Lead'); }
+    function mail(){ location.href='mailto:'+TO+'?subject='+encodeURIComponent('Brief from '+fd.get('email'))+'&body='+encodeURIComponent(fd.get('brief')+'\n\nReply to: '+fd.get('email')); ok(); }
+    fd.append('source', new URLSearchParams(location.search).get('utm_source') || document.referrer || 'direct');
+    fd.append('page', location.pathname);
+    if(!SHEET_ENDPOINT){ mail(); return; }
+    var btn=f.querySelector('.btn'); btn.disabled=true;
+    fetch(SHEET_ENDPOINT,{method:'POST',mode:'no-cors',body:fd}).then(ok).catch(mail);
+  });
+})();
+</script>
+</body>
+</html>
